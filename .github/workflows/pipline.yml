@@ -30,9 +30,10 @@ jobs:
 
       - name: Build Docker image for the app with labels
         run: |
-          docker build -t sekula8/app:latest \
+          docker buildx build -t sekula8/app:latest \
             --label build_date=$(date) \
-            --label commit_hash=${GITHUB_SHA} .
+            --label commit_hash=${GITHUB_SHA} \
+            .
 
       - name: Display Docker image tag and build info
         run: |
