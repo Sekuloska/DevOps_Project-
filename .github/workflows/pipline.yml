@@ -33,7 +33,7 @@ jobs:
           docker buildx build -t sekula8/app:latest \
             --label build_date=$(date) \
             --label commit_hash=${GITHUB_SHA} \
-            .
+            ./DevOps_Project-master  
 
       - name: Display Docker image tag and build info
         run: |
