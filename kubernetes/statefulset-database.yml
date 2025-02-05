@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+  namespace: devops-namespace
+data:
+  POSTGRES_USER: "postgres"
+  POSTGRES_DB: "kii"
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secret
+  namespace: devops-namespace
+type: Opaque
+data:
+  POSTGRES_PASSWORD: c2VrdWxhOA==
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: statefulset-database
+  namespace: devops-namespace
+spec:
+  selector:
+    app: statefulset-database
+  ports:
+    - protocol: TCP
+      port: 9091
+      targetPort: 5432
+  clusterIP: None
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: statefulset-database
+  namespace: devops-namespace
+spec:
+  serviceName: statefulset-database
+  replicas: 1
+  selector:
+    matchLabels:
+      app: statefulset-database
+  template:
+    metadata:
+      labels:
+        app: statefulset-database
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: POSTGRES_DB
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
