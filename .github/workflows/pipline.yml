@@ -28,8 +28,16 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker image for the app
-        run: docker build -t sekula8/app:latest .
+      - name: Build Docker image for the app with labels
+        run: |
+          docker build -t sekula8/app:latest \
+            --label build_date=$(date) \
+            --label commit_hash=${GITHUB_SHA} .
+
+      - name: Display Docker image tag and build info
+        run: |
+          echo "Built Docker image: sekula8/app:latest with commit hash $GITHUB_SHA and build date $(date)"
 
       - name: Upload Docker image to Docker Hub
-        run: docker push sekula8/app:latest
+        run: |
+          docker push sekula8/app:latest
