@@ -10,3 +10,5 @@ kubectl get pods -n devops-namespace
 kubectl get services -n devops-namespace
 kubectl get deployments -n devops-namespace
 kubectl get ingress -n devops-namespace
+
+promeni
