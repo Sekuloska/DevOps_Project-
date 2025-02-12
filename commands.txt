@@ -1,8 +1,3 @@
-kubectl create namespace devops-namespace
-kubectl apply -f statefulset-database.yml -n devops-namespace
-kubectl apply -f app-deployment.yml -n devops-namespace
-kubectl apply -f service-application.yml -n devops-namespace
-kubectl apply -f ingress.yml -n devops-namespace
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
 kubectl port-forward pod/app-5fc646cbb6-6d77l 8080:8080 -n devops-namespace
 
@@ -10,5 +5,3 @@ kubectl get pods -n devops-namespace
 kubectl get services -n devops-namespace
 kubectl get deployments -n devops-namespace
 kubectl get ingress -n devops-namespace
-
-changed
